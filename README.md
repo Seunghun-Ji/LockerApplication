@@ -11,7 +11,7 @@
 
 ## 1.2. 프로젝트에 쓰인 목록
 
-* [**spring boot**](https://projects.spring.io/spring-boot/)
+* [**Spring boot**](https://projects.spring.io/spring-boot/)
 * [**PostgreSQL**](https://www.postgresql.org/)
 
 ## 1.3. 파일 리스트
