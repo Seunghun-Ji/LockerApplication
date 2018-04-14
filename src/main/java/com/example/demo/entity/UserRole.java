@@ -17,12 +17,14 @@ import lombok.Setter;
 *
 * [설명] 	Database의 Entity 정보를 받기 위한 class로
 * 		사용자의 권한 정보를 받는다.
+* 		annotation 중 ManyToOne과 OneToMany의 기능을 공부할 필요가 있다.
 *
 * @file : UserRole.java
 * @package : com.example.demo.entity
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 4. 8.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 @Entity
 @Table( name = "User_Role", schema = "lockeruser", //

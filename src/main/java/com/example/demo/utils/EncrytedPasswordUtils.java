@@ -4,13 +4,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
 *
-* [설명] 	encryted password가 어떤 값인지를 구하기 위한 코드
+* [설명] 	encryted password가 어떤 값인지를 구하기 위한 샘플 코드
 *
 * @file : EncrytedPasswordUtils.java
 * @package : com.example.demo.utils
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 4. 8.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 public class EncrytedPasswordUtils {
  

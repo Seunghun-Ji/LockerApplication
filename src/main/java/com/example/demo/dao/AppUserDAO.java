@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 4. 8.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 @Repository
 @Transactional
@@ -33,12 +34,12 @@ public class AppUserDAO {
                     + " Where e.userId = :userId ";
  
             Query query = entityManager.createQuery(sql, AppUser.class);
-            query.setParameter("userId", userId); //위의 :userId 자리에 findUserAccount 파라미터로 받은 데이터를 넣는다.
+            query.setParameter("userId", userId); // 위의 :userId 자리에 findUserAccount 파라미터로 받은 데이터를 넣는다.
  
             return (AppUser) query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
     }
- 
+    
 }

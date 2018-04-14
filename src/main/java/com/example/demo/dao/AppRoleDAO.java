@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 4. 8.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 @Repository
 @Transactional

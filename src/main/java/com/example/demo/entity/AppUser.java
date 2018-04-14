@@ -25,6 +25,7 @@ import lombok.Setter;
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 4. 8.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 @Entity
 @Table( name = "App_User", schema = "lockeruser", //
@@ -60,7 +61,7 @@ public class AppUser {
     @Column(name = "Modified_Date", updatable = true)
     private LocalDate ModifiedDate;
     
-    @Column(name = "last_login", updatable = true)
+    @Column(name = "last_Login", updatable = true)
     private LocalDate lastLogin;
  
     @Column(name = "Enabled", length = 1, nullable = false)

@@ -26,6 +26,7 @@ import com.example.demo.service.UserDetailsServiceImpl;
 * @project : LockerApplication
 * @author : Seung-hun Ji
 * @since : 2018. 3. 27.
+* @link : https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944416
 */
 @Configuration
 @EnableWebSecurity
@@ -70,8 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 			.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") //admin 이하의 내용은 Admin 권한만 접근 가능. antMatchers().hasRole(ROLE_ADMIN")은 안됨
 			.antMatchers("/userInfo").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')") // 해당 권한을 가진 자만 접근 가능
+			.antMatchers("/login", "/create", "/createProcessing").permitAll() //누구든 접근 가능
 			.antMatchers("/**").authenticated() //승인된 이용자만 접근 가능
-			//.antMatchers("/**").permitAll() //누구든 접근 가능
 			;
 		
 		// 권한을 소유하지 않아서 접근 실패 시 AccessDeniedException이 처리해 보여줄 페이지
