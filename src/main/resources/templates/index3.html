@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang = "KO" xmlns:th="http://www.typeleaf.org">
 <head>
     <meta charset = "UTF-8">
     <title>COUNTER</title>
     <script type= "text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-    <script>
+    <script th:inline="javascript">
         var url;
         var url_host = "http://172.31.37.9:5000/";
         var ccId;
@@ -14,8 +15,8 @@
         function login()
         {
             url = url_host + "registrar";
-            user_name = $("#userName").val();
-            var password = $("#password").val();
+            user_name = "test_user0"
+            var password = "MS9qrN8hFjlE";
             var JSONdata = {
                 "enrollId": user_name,
                 "enrollSecret":password
@@ -51,7 +52,7 @@
             function error(data)
             {
                 // 배포 에러
-                console.log("Deploy Error!!")
+                console.log("Deploy Error!!") 
 
             }
             );
@@ -59,6 +60,8 @@
         //갱신
         function refresh()
         {
+            
+            
             if (counterList != null)
             {
                 var table = document.getElementById('list');
@@ -72,7 +75,7 @@
 
         }
         // 카운터 증가
-        function countup()
+        function Register()
         {
             url = url_host + "chaincode";
             var targetIndex;
@@ -86,7 +89,7 @@
                 }
             }
             // 대상자 카운트
-            var JSONdata = createJSONdataForCounterApp("invoke", "countup", [targetIndex], 3);
+            var JSONdata = createJSONdataForCounterApp("invoke", "Register", [targetIndex, /*[[${userId}]]*/], 3);
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
@@ -187,7 +190,7 @@
                     radioButton1.value = i;
                     td.appendChild(radioButton1);
                     td = row.insertCell(1);
-                    td.innerHTML = counter.name;
+                    td.innerHTML = counter.id;
                     td = row.insertCell(2);
                     td.innerHTML = counter.lock;
                     //###HTML 편집 table 행 추가, 편집 끝###
@@ -217,6 +220,9 @@
                 },
                 id: id
             };
+            
+            console.log(args);
+            
             //체인 코드 ID 설정
             if (functionName == "init")
             {
@@ -258,14 +264,8 @@
     </script>
 </head>
 <body>
-	<h2>어서오세요! <span th:text="${userId}">${userId}</span></h2>
-    <p>
-        사용자 이름:&nbsp;<input type = "text" id= "userName" value = "test_user0">&nbsp; 패스워드:&nbsp;
-        <input type = "text" id = "password" value = "MS9qrN8hFjlE">&nbsp; <input type = "button" value = "login" onclick = "login();"/>
-    </p>
-    <p>
-        <input type = "button" value = "deploy" onclick = "deploy();" />
-    </p>
+    <h2>어서오세요! <span id = "userId" th:text="${userId}">${userId}</span></h2>
+    
     <table id = "list" border = "1">
         <tr>
             <th></th>
@@ -279,5 +279,19 @@
     <input type = "button" value= "refresh" onclick = "refresh();" />
     <br />
     <input type = "button" value= "unlock" onclick = "Unlock();" />
+	<br />
+	<input type="button" value="register" onclick="Register();" />
+	
 </body>
+<script th:inline = "javascript">
+
+    $(document).ready(function(){
+        alert("시작하자마자 날 보게 될거야 " + /*[[${userId}]]*/);
+        login();
+        deploy();
+        console.log(/*[[${userId}]]*/);
+});
+  
+  </script>
+
 </html>

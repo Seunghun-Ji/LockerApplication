@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,9 +38,14 @@ public class MainController {
 		return "monitor";
 	}
 	
+	// Thymeleaf로 정보를 넘기는 방법
+	// link: http://chomman.github.io/blog/spring%20framework/spring-security%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-%EC%82%AC%EC%9A%A9%EC%9E%90%EC%9D%98-%EC%A0%95%EB%B3%B4%EB%A5%BC-%EC%B0%BE%EB%8A%94-%EB%B0%A9%EB%B2%95/
 	@RequestMapping(value="/index")
-	public String indexPage() {
-		return "index2";
+	public String indexPage(Principal principal, Model model) {
+		
+		// 사용자 ID 정보는 principal.getName()으로 가져올 수 있다.
+		model.addAttribute("userId", principal.getName());
+		return "index3";
 	}
 	
 	@RequestMapping(value="/admin")

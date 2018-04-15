@@ -51,7 +51,5 @@ public class SignInSuccess implements ApplicationListener<AuthenticationSuccessE
 		
 		userRepository.update(name, localDate);
 		
-		
-		
 	}
 }
