@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.config.RaspPiClientConfig;
 import com.example.demo.entity.AppUser;
 import com.example.demo.service.RepositoryServiceImpl;
 
@@ -61,6 +62,19 @@ public class MainController {
 	@RequestMapping("/create")
 	public String create() {
 		return "create";
+	}
+	
+	@RequestMapping("/test")
+	public String test() {
+		return "/test";
+	}
+	
+	@RequestMapping(value="/data", method=RequestMethod.POST)
+	public String data(@RequestParam("led") String led) {
+		System.out.println(led);
+		RaspPiClientConfig cm = new RaspPiClientConfig();
+		cm.clientRun(led);
+		return "redirect:/test";
 	}
 	
 	@RequestMapping(value="/createProcessing", method=RequestMethod.POST)

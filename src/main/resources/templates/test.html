@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang = "KO" xmlns:th="http://www.typeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <title>button test</title>
+  </head>
+  <body>
+    <h1>LED page</h1>
+    <form th:action = "@{/data}" method = "post">
+      <input type = 'submit' value = 'open' name = 'led'>
+      <input type = 'submit' value = 'close' name = 'led'>
+    </form>
+  </body>
+</html>
