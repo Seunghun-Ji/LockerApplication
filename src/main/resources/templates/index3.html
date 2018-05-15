@@ -7,7 +7,7 @@
     <script type= "text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
     <script th:inline="javascript">
         var url;
-        var url_host = "http://172.31.36.120:5000/";
+        var url_host = "http://172.31.37.147:5000/";
         var ccId;
         var counterList;
         var user_name;
@@ -47,12 +47,14 @@
                 //배포 성공
                 ccId = data.result.message;
                 console.log("Deploy Success!!");
+                console.log(data);
 
             },
             function error(data)
             {
                 // 배포 에러
                 console.log("Deploy Error!!") 
+                console.log(data);
 
             }
             );
@@ -74,7 +76,7 @@
             getCounters();
 
         }
-        // 카운터 증가
+        // 사용자 등록
         function Register()
         {
             url = url_host + "chaincode";
@@ -93,12 +95,46 @@
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
-                console.log("countUp Success!!");
+                console.log("Register Success!!");
+                console.log(data);
 
             },
             function error(data)
             {
-                console.log("countUp error!!");
+                console.log("Register error!!");
+                console.log(data);
+            }
+            );
+
+        }
+        
+     	// 사용자 등록 해제
+        function Unregister()
+        {
+            url = url_host + "chaincode";
+            var targetIndex;
+            var counterList = document.getElementsByName("counter");
+            for(i=0; i< counterList.length;i++)
+            {
+                if (counterList[i].checked)
+                {
+                    //대상 카운터 정보 취득
+                    targetIndex = counterList[i].value;
+                }
+            }
+            // 대상자 카운트
+            var JSONdata = createJSONdataForCounterApp("invoke", "UnRegister", [targetIndex, /*[[${userId}]]*/], 3);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                console.log("Unregister Success!!");
+                console.log(data);
+
+            },
+            function error(data)
+            {
+                console.log("Unregister error!!");
+                console.log(data);
             }
             );
 
@@ -124,11 +160,13 @@
             function success(data)
             {
                 console.log("Unlock Success!!");
+                console.log(data);
 
             },
             function error(data)
             {
                 console.log("Unlock error!!");
+                console.log(data);
             }
             );
 
@@ -154,11 +192,13 @@
             function success(data)
             {
                 console.log("Lock Success!!");
+                console.log(data);
 
             },
             function error(data)
             {
                 console.log("Lock error!!");
+                console.log(data);
             }
             );
 
@@ -281,7 +321,8 @@
     <input type = "button" value= "unlock" onclick = "Unlock();" />
 	<br />
 	<input type="button" value="register" onclick="Register();" />
-	
+	<br />
+	<input type="button" value="unregister" onclick="Unregister();" />
 </body>
 <script th:inline = "javascript">
 

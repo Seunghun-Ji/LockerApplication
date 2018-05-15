@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.config.RaspPiClientConfig;
+import com.example.demo.communications.RaspPiClient;
 import com.example.demo.entity.AppUser;
 import com.example.demo.service.RepositoryServiceImpl;
 
@@ -72,7 +72,7 @@ public class MainController {
 	@RequestMapping(value="/data", method=RequestMethod.POST)
 	public String data(@RequestParam("led") String led) {
 		System.out.println(led);
-		RaspPiClientConfig cm = new RaspPiClientConfig();
+		RaspPiClient cm = new RaspPiClient();
 		cm.clientRun(led);
 		return "redirect:/test";
 	}

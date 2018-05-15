@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.communications;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,7 @@ import java.net.Socket;
 * @since : 2018. 5. 7.
 * @link : http://hunit.tistory.com/256
 */
-public class RaspPiClientConfig {
+public class RaspPiClient {
 	public void clientRun(String data) {
 
 		Socket socket = null;
@@ -32,7 +32,7 @@ public class RaspPiClientConfig {
 		BufferedReader br = null;
 
 		try {
-			socket = new Socket("172.20.14.8", 7777);
+			socket = new Socket("172.20.14.19", 7777);
 			os = socket.getOutputStream();
 			osw = new OutputStreamWriter(os);
 			bw = new BufferedWriter(osw); // 서버로 전송을 위한 OutputStream
