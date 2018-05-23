@@ -6,8 +6,10 @@
   </head>
   <body>
     <h1>ON/OFF page</h1>
+    <span th:if="${returnedData} != null" th:text="${returnedData}"></span>
+    <br>
     <form th:action = "@{/data}" method = "post">
-      <input type = 'submit' value = 'open' name = 'led'>
+      <input type = 'submit' value = 'UsaD6HEdz0,,' name = 'led'>
       <input type = 'submit' value = 'close' name = 'led'>
       <input type = 'submit' value = 'keyNum,1,idtest' name = 'led'>
     </form>

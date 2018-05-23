@@ -5,9 +5,11 @@ import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.communications.RaspPiClient;
 import com.example.demo.entity.AppUser;
@@ -41,9 +43,9 @@ public class MainController {
 	
 	// Thymeleaf로 정보를 넘기는 방법
 	// link: http://chomman.github.io/blog/spring%20framework/spring-security%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-%EC%82%AC%EC%9A%A9%EC%9E%90%EC%9D%98-%EC%A0%95%EB%B3%B4%EB%A5%BC-%EC%B0%BE%EB%8A%94-%EB%B0%A9%EB%B2%95/
+	@CrossOrigin("*")
 	@RequestMapping(value="/index")
 	public String indexPage(Principal principal, Model model) {
-		
 		// 사용자 ID 정보는 principal.getName()으로 가져올 수 있다.
 		model.addAttribute("userId", principal.getName());
 		return "index3";
@@ -70,10 +72,15 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/data", method=RequestMethod.POST)
-	public String data(@RequestParam("led") String led) {
+	public String data(@RequestParam("led") String led, RedirectAttributes redirectAttributes) {
 		System.out.println(led);
 		RaspPiClient cm = new RaspPiClient();
+		
+		// test에게 수행 결과를 알려주기 위한 데이터 전달
+		redirectAttributes.addAttribute("returnedData","success");
+		
 		cm.clientRun(led);
+		
 		return "redirect:/test";
 	}
 	
@@ -85,6 +92,11 @@ public class MainController {
 		
 		// Redirect:/login로 입력하면 안된다. 꼭 redirect:/login 으로 써야한다.
 		return "redirect:/login"; //회원가입 성공 시 login 페이지로 넘어간다.
+	}
+	
+	@RequestMapping(value="/ajax")
+	public String ajaxPage() {
+		return "ajaxtest";
 	}
 	
 }

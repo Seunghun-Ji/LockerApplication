@@ -20,7 +20,9 @@ import java.net.Socket;
 * @link : http://hunit.tistory.com/256
 */
 public class RaspPiClient {
-	public void clientRun(String data) {
+	public String clientRun(String data) {
+		
+		String result = null;
 
 		Socket socket = null;
 		OutputStream os = null;
@@ -32,7 +34,7 @@ public class RaspPiClient {
 		BufferedReader br = null;
 
 		try {
-			socket = new Socket("172.20.14.19", 7777);
+			socket = new Socket("172.20.14.124", 7777);
 			os = socket.getOutputStream();
 			osw = new OutputStreamWriter(os);
 			bw = new BufferedWriter(osw); // 서버로 전송을 위한 OutputStream
@@ -48,8 +50,13 @@ public class RaspPiClient {
 			String receiveData = "";
 			receiveData = br.readLine(); // 서버로부터 데이터 한줄 읽음
 			System.out.println("서버로부터 받은 데이터 : " + receiveData);
+			
+			result = receiveData;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			result = "failure";
+			
 		} finally {
 			try {
 				bw.close();
@@ -62,5 +69,6 @@ public class RaspPiClient {
 				e.printStackTrace();
 			}
 		}
+		return result;
 	}
 }

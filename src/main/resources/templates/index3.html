@@ -1,16 +1,30 @@
-
 <!DOCTYPE html>
 <html lang = "KO" xmlns:th="http://www.typeleaf.org">
 <head>
+	
     <meta charset = "UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>COUNTER</title>
     <script type= "text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
     <script th:inline="javascript">
-        var url;
-        var url_host = "http://172.31.37.147:5000/";
+    	var user_name;
+        var url_host = "http://172.31.36.126:5000/";
         var ccId;
         var counterList;
-        var user_name;
+        var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		/* 
+		function callOtherDoamin(url) 
+		{
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', url, true);
+				xhr.onreadystatechange = function() {
+					if(xhr.readyState === 4 && xhr.status === 200){
+				        document.querySelector('#time').innerHTML = xhr.responseText;
+				}
+		}
+		 */
         //로그인
         function login()
         {
@@ -20,19 +34,16 @@
             var JSONdata = {
                 "enrollId": user_name,
                 "enrollSecret":password
-
             };
             executeJsonRpc(url, JSONdata,
             function success(data){
                 //로그인 성공
                 console.log("Login Success!!");
-
             },
             function error(data)
             {
                 //로그인 실패
                 console.log("login error");
-
             }
             );
         }
@@ -45,25 +56,23 @@
             function success(data)
             {
                 //배포 성공
+              	
                 ccId = data.result.message;
                 console.log("Deploy Success!!");
-                console.log(data);
-
+                alert("Deploy success!");
+                refresh();
             },
             function error(data)
             {
                 // 배포 에러
                 console.log("Deploy Error!!") 
                 console.log(data);
-
             }
             );
         }
         //갱신
-        function refresh()
+        function refresh(function1)
         {
-            
-            
             if (counterList != null)
             {
                 var table = document.getElementById('list');
@@ -73,9 +82,9 @@
                 }
             }
             // 카운터 정보 모두 취득
-            getCounters();
-
+            getCounters(function1);
         }
+        
         // 사용자 등록
         function Register()
         {
@@ -95,9 +104,13 @@
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
-                console.log("Register Success!!");
-                console.log(data);
-
+                if(data=="error")
+                	console.log("error")
+                else if (!data)
+                	console.log("Register Success!!");
+                console.log("register: ", data);
+                refresh(rasp);
+                
             },
             function error(data)
             {
@@ -105,10 +118,9 @@
                 console.log(data);
             }
             );
-
         }
         
-     	// 사용자 등록 해제
+        // 사용자 등록 해제
         function Unregister()
         {
             url = url_host + "chaincode";
@@ -127,9 +139,13 @@
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
                 console.log("Unregister Success!!");
                 console.log(data);
-
+                refresh();
+               
             },
             function error(data)
             {
@@ -137,7 +153,6 @@
                 console.log(data);
             }
             );
-
         }
         
         // 잠금 해제
@@ -159,9 +174,11 @@
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
                 console.log("Unlock Success!!");
-                console.log(data);
-
+                refresh();
             },
             function error(data)
             {
@@ -169,7 +186,6 @@
                 console.log(data);
             }
             );
-
         }
         
         // 잠금
@@ -191,9 +207,11 @@
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
                 console.log("Lock Success!!");
-                console.log(data);
-
+                refresh();
             },
             function error(data)
             {
@@ -201,48 +219,58 @@
                 console.log(data);
             }
             );
-
         }
         
-        
         //카운터 취득
-        function getCounters()
+        function getCounters(function1)
         {
             url = url_host + "chaincode";
             var JSONdata = createJSONdataForCounterApp("query", "refresh", [], 5);
             executeJsonRpc(url, JSONdata,
                 function success(data)
-                {                    
-                console.log(data);
-                counterList = JSON.parse(data.result.message);
-                var table = document.getElementById('list');
-                for(var i =0; i<counterList.length; i++)
                 {
-                    //카운터 정보 취득
-                    var counter = counterList[i];
-                    console.log("["+i+"]", counter);
-                    //### HTML 편집 table 행 추가, 편집 시작###
-                    var row = table.insertRow();
-                    var td = row.insertCell(0);
-                    var radioButton1 = document.createElement('input');
-                    radioButton1.type = 'radio';
-                    radioButton1.name = 'counter';
-                    radioButton1.value = i;
-                    td.appendChild(radioButton1);
-                    td = row.insertCell(1);
-                    td.innerHTML = counter.id;
-                    td = row.insertCell(2);
-                    td.innerHTML = counter.lock;
-                    //###HTML 편집 table 행 추가, 편집 끝###
-                
-
-                }
-            },
-            function error(data)
-            {
-                console.log("refresh error");
-            }
+	                console.log(data);
+	                counterList = JSON.parse(data.result.message);
+	                console.log("counterList", counterList);
+	                var table = document.getElementById('list');
+	                for(var i =0; i<counterList.length; i++)
+	                {
+	                    //카운터 정보 취득
+	                    var counter = counterList[i];
+	                    console.log("["+i+"]", counter);
+	                    //### HTML 편집 table 행 추가, 편집 시작###
+	                    var row = table.insertRow();
+	                    var td = row.insertCell(0);
+	                    var radioButton1 = document.createElement('input');
+	                    radioButton1.type = 'radio';
+	                    radioButton1.name = 'counter';
+	                    radioButton1.value = i;
+	                    td.appendChild(radioButton1);
+	                    td = row.insertCell(1);
+	                    td.innerHTML = counter.id;
+	                    td = row.insertCell(2);
+	                    td.innerHTML = counter.lock;
+	                    //###HTML 편집 table 행 추가, 편집 끝###
+	                    
+	                    // block chian db에 등록된 사용자 정보 확인
+	                    if(counter.id == /*[[${userId}]]*/)
+	                    {
+	                    	var key = counter.key;
+	                    	var no = counter.no;
+	                    	
+	                    	if(typeof function1 === "function")
+	                        	function1(key, no);
+	                    }
+	                }
+	            },
+	            function error(data)
+	            {
+	                console.log("refresh error");
+	            }
+	            
             );
+
+            
         }
         //JSON 메세지 생성
         function createJSONdataForCounterApp(method, functionName, args, id)
@@ -261,7 +289,7 @@
                 id: id
             };
             
-            console.log(args);
+            // console.log(args);
             
             //체인 코드 ID 설정
             if (functionName == "init")
@@ -277,14 +305,15 @@
                 {
                     name: ccId
                 };
-
             }
             return JSONdata;
         }
         //JSON-RPC 실행
         function executeJsonRpc(url_exec, JSONdata, success, error)
         {
+        	var returnValue = 1;
             $.ajax({
+            	headers: {  'Access-Control-Allow-Headers': 'http://172.31.36.126:5000/chaincode' },
                 type : 'post',
                 url: url_exec,
                 data : JSON.stringify(JSONdata),
@@ -294,12 +323,48 @@
                 success: function(data)
                 {
                     success(data);
+                    console.log(data);
                 },
                 error: function(data)
                 {
                     error(data);
                 }
             });
+            
+        }
+        
+        function rasp(user_key, user_box) {
+        	
+        	console.log("rasp start!", user_key, " ", user_box);
+        	
+        	var json_Rasp = {};
+            json_Rasp["key"] = user_key;
+            json_Rasp["box"] = user_box;
+            
+         // csrf와 meta 태그, 아래의 token 값에 대해 공부 필요
+    		$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            
+            // Rasp에 데이터 전송을 위해 서버에게 통신 요청
+            $.ajax( {
+				type: "POST",
+	            contentType: "application/json",
+	            url: "object",
+	            data: JSON.stringify(json_Rasp),
+	            dataType: 'json',
+	            // cache: false,
+	            // timeout: 600000,
+	            success: function (data) {
+	 				console.log("success: ", data);
+	 			},
+	            error: function (e) {
+	            	
+	                var json = "<h4>Ajax Response Error</h4><pre>"
+	                    + e.responseText + "</pre>";
+	 
+	                console.log("ERROR : ", e);
+	                console.log("json: ", json);
+	            }
+			});
         }
     </script>
 </head>
@@ -319,17 +384,16 @@
     <input type = "button" value= "refresh" onclick = "refresh();" />
     <br />
     <input type = "button" value= "unlock" onclick = "Unlock();" />
-	<br />
-	<input type="button" value="register" onclick="Register();" />
-	<br />
-	<input type="button" value="unregister" onclick="Unregister();" />
+   <br />
+   <input type="button" value="register" onclick="Register();" />
+   <br />
+   <input type="button" value="unregister" onclick="Unregister();" />
 </body>
 <script th:inline = "javascript">
-
     $(document).ready(function(){
         login();
         deploy();
-        alert("콘솔창(F12)를 켜서 Deploy Success가 나올때까지 기다리세요!");
+        alert("Deploy Success가 나올때까지 기다리세요!");
         //console.log(/*[[${userId}]]*/);
 });
   

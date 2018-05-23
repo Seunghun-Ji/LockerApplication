@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		//인증을 풀어줄 요소 (주로 리소스)
 		web.ignoring().antMatchers("/css/**", "/script/**", "/image/**", "/fonts/**", "/lib/**");
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
@@ -110,4 +110,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         db.setDataSource(dataSource);
         return db;
     }
+	
 }
