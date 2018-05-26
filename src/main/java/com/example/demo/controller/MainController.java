@@ -33,7 +33,42 @@ public class MainController {
 	
 	@RequestMapping(value="/")
 	public String mainPage() {
-		return "index";
+		return "main/index";
+	}
+	
+	@RequestMapping(value="/aboutUs")
+	public String aboutUsPage() {
+		return "main/aboutUs";
+	}
+	
+	@RequestMapping(value="/features")
+	public String featuresPage() {
+		return "main/features";
+	}
+	
+	@RequestMapping(value="/portal")
+	public String portalPage() {
+		return "portal/index";
+	}
+	
+	@RequestMapping(value="/signUp")
+	public String signUpPage() {
+		return "portal/signUp";
+	}
+	
+	@RequestMapping(value="/info")
+	public String infoPage() {
+		return "enroll/info";
+	}
+	
+	@RequestMapping(value="enroll")
+	public String enrollPage() {
+		return "enroll/enroll";
+	}
+	
+	@RequestMapping(value="userInfo")
+	public String userInfoPage() {
+		return "userInfo/userInfo";
 	}
 	
 	@RequestMapping(value="/monitor")
@@ -58,7 +93,12 @@ public class MainController {
 	
 	@RequestMapping(value="/login")
 	public String loginPage() {
-		return "/login";
+		return "login";
+	}
+	
+	@RequestMapping(value="/signUp2")
+	public String signUp2Page() {
+		return "signUp2";
 	}
 
 	@RequestMapping("/create")

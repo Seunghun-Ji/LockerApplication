@@ -39,7 +39,7 @@ public class AjaxController {
 		
 		// RaspPi와 통신하기 위해 클라이언트 객체 생성
 		RaspPiClient cm = new RaspPiClient();
-		String sendData = params.getKey() + "," + params.getBox() + "," + principal.getName();
+		String sendData = params.getKey() + "," + params.getBox() + "," + principal.getName() + "," + params.getCommand();
 		
 		cm.clientRun(sendData);
 		
@@ -67,4 +67,5 @@ public class AjaxController {
 class DoorRequest {
 	private String key;
 	private int box;
+	private int command;
 }

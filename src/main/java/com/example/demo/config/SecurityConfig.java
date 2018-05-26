@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public void configure(WebSecurity web) throws Exception
 	{
 		//인증을 풀어줄 요소 (주로 리소스)
-		web.ignoring().antMatchers("/css/**", "/script/**", "/image/**", "/fonts/**", "/lib/**");
+		web.ignoring().antMatchers("/css/**", "/script/**", "/image/**", "/fonts/**", "/lib/**", "/main/**", "/portal/**", "/loginForm/**");
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 			.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") //admin 이하의 내용은 Admin 권한만 접근 가능. antMatchers().hasRole(ROLE_ADMIN")은 안됨
 			.antMatchers("/userInfo").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')") // 해당 권한을 가진 자만 접근 가능
-			.antMatchers("/login", "/create", "/createProcessing").permitAll() //누구든 접근 가능
+			.antMatchers("/create", "/createProcessing", "/", "/aboutUs", "/features", "/portal", "/signUp2").permitAll() //누구든 접근 가능
 			.antMatchers("/**").authenticated() //승인된 이용자만 접근 가능
 			;
 		
@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.loginPage("/login").permitAll()
 			//로그인 실패시 보여줄 에러페이지
 			.failureUrl("/login?error=true") // login.html에서 이 url을 받을 경우 에러 원인을 나타내준다.
-			.usernameParameter("username1") // view에서 입력하는 name 설정
+			.usernameParameter("username") // view에서 입력하는 name 설정
             .passwordParameter("password")
 			//로그아웃
 			.and().logout()

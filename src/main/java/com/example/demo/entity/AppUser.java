@@ -41,7 +41,7 @@ public class AppUser {
  
     @Column(name = "User_ID", length = 32, nullable = false)
     private String userId;
- 
+
     @Column(name = "Encryted_Password", length = 128, nullable = false)
     private String encrytedPassword;
     

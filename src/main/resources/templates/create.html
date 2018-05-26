@@ -1,27 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.typeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8"/>
-	<title>회원가입</title>
+	<title>Login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<!-- <link rel="icon" type="image/png" href="loginForm/images/icons/favicon.ico"/> -->
+	<link rel="shortcut icon" href="main/assets/images/1-127x128.png" type="image/x-icon">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="loginForm/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="loginForm/css/util.css">
+	<link rel="stylesheet" type="text/css" href="loginForm/css/main.css">
+<!--===============================================================================================-->
+
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/bootstrap/js/popper.js"></script>
+	<script src="loginForm/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/daterangepicker/moment.min.js"></script>
+	<script src="loginForm/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="loginForm/js/main.js"></script>
 </head>
 <body>
-<div>
 	
-	<form th:action="@{/createProcessing}" method="post">
-		<h2>회원가입</h2>
-		
-		<!-- 강의를 간결하게 끝내기 위함.. 원래는 가입실패 여부를 자세히 표시해야한다 -->
-		<div th:if="${param.error}">
-			계정이 중복됩니다.
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('loginForm/images/bg-01.jpg');">
+			<div class="wrap-login100 p-t-30 p-b-50">
+				<span class="login100-form-title p-b-41">
+					Account Sign Up
+				</span>
+				<form class="login100-form validate-form p-b-33 p-t-5" th:action="@{/createProcessing}" method='POST'>
+					
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="userId" placeholder="User ID" required="required" />
+						<span class="focus-input100" data-placeholder="&#xe822;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="password" name="password" placeholder="Password" required="required" />
+						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
+					</div>
+					
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="email" name="userEmail" placeholder="Email" required="required" />
+						<span class="focus-input100" data-placeholder="&#xe818;"></span>
+					</div>
+					
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="userName" placeholder="User name" required="required" />
+						<span class="focus-input100" data-placeholder="&#xe82a;"></span>
+					</div>
+					
+					<!-- 강의를 간결하게 끝내기 위함.. 원래는 가입실패 여부를 자세히 표시해야한다 -->
+					<div th:if="${param.error}">
+						계정이 중복됩니다.
+					</div>
+					
+					<div class="container-login100-form-btn m-t-32">
+						<!-- 
+						<button class="login100-form-btn">
+							Login
+						</button>
+						 -->
+						<input class="login100-form-btn" type="submit" value="Sign Up" />
+					</div>
+
+				</form>
+			</div>
 		</div>
-		
-		<input type="text" name="userId" placeholder="계정" required="required"/>
-		<input type="password" name="password" placeholder="암호" required="required"/>
-		<input type="email" name="userEmail" placeholder="이메일" required="required"/>
-		<input type="text" name="userName" placeholder="이름" required="required"/>
-		<input type="submit" value="회원가입"/>
-	</form>
+	</div>
 	
-</div>
+
+	<div id="dropDownSelect1"></div>
+	
+
+
 </body>
 </html>

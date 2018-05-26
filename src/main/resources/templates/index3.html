@@ -71,8 +71,10 @@
             );
         }
         //갱신
-        function refresh(function1)
+        function refresh(function1, targetIndex, command)
         {
+        	if(targetIndex)
+        		console.log("selected number: ", targetIndex + 1);
             if (counterList != null)
             {
                 var table = document.getElementById('list');
@@ -82,7 +84,7 @@
                 }
             }
             // 카운터 정보 모두 취득
-            getCounters(function1);
+            getCounters(function1, targetIndex, command);
         }
         
         // 사용자 등록
@@ -109,7 +111,7 @@
                 else if (!data)
                 	console.log("Register Success!!");
                 console.log("register: ", data);
-                refresh(rasp);
+                refresh(rasp, Number(targetIndex), 3);
                 
             },
             function error(data)
@@ -144,7 +146,7 @@
                 else if (!data)
                 console.log("Unregister Success!!");
                 console.log(data);
-                refresh();
+                refresh(rasp, Number(targetIndex), 4);
                
             },
             function error(data)
@@ -170,7 +172,7 @@
                 }
             }
             // 대상자 카운트
-            var JSONdata = createJSONdataForCounterApp("invoke", "Unlock", [targetIndex], 7);
+            var JSONdata = createJSONdataForCounterApp("invoke", "Unlock", [targetIndex, /*[[${userId}]]*/], 7);
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
@@ -178,7 +180,7 @@
                 console.log("error")
                 else if (!data)
                 console.log("Unlock Success!!");
-                refresh();
+                refresh(rasp, Number(targetIndex), 1);
             },
             function error(data)
             {
@@ -203,7 +205,7 @@
                 }
             }
             // 대상자 카운트
-            var JSONdata = createJSONdataForCounterApp("invoke", "Lock", [targetIndex], 9);
+            var JSONdata = createJSONdataForCounterApp("invoke", "Lock", [targetIndex, /*[[${userId}]]*/], 9);
             executeJsonRpc(url, JSONdata,
             function success(data)
             {
@@ -211,7 +213,7 @@
                 console.log("error")
                 else if (!data)
                 console.log("Lock Success!!");
-                refresh();
+                refresh(rasp, Number(targetIndex), 2);
             },
             function error(data)
             {
@@ -222,7 +224,7 @@
         }
         
         //카운터 취득
-        function getCounters(function1)
+        function getCounters(function1, targetIndex, command)
         {
             url = url_host + "chaincode";
             var JSONdata = createJSONdataForCounterApp("query", "refresh", [], 5);
@@ -253,14 +255,23 @@
 	                    //###HTML 편집 table 행 추가, 편집 끝###
 	                    
 	                    // block chian db에 등록된 사용자 정보 확인
-	                    if(counter.id == /*[[${userId}]]*/)
+	                    if( counter.no == (targetIndex + 1) && counter.id == /*[[${userId}]]*/ )
 	                    {
 	                    	var key = counter.key;
 	                    	var no = counter.no;
 	                    	
 	                    	if(typeof function1 === "function")
-	                        	function1(key, no);
+	                        	function1(key, no, command);
 	                    }
+	                }
+	                
+	                if(command == 4)
+	                {
+	                	if(typeof function1 === "function")
+	                		{
+	                			var no = (targetIndex + 1);
+	                			function1("", no, command);
+	                		}
 	                }
 	            },
 	            function error(data)
@@ -313,7 +324,7 @@
         {
         	var returnValue = 1;
             $.ajax({
-            	headers: {  'Access-Control-Allow-Headers': 'http://172.31.36.126:5000/chaincode' },
+            	// headers: {  'Access-Control-Allow-Headers': 'http://172.31.37.31:5000/chaincode' },
                 type : 'post',
                 url: url_exec,
                 data : JSON.stringify(JSONdata),
@@ -333,13 +344,14 @@
             
         }
         
-        function rasp(user_key, user_box) {
+        function rasp(user_key, user_box, command) {
         	
-        	console.log("rasp start!", user_key, " ", user_box);
+        	console.log("rasp start!", user_key, " ", user_box, " ", command);
         	
         	var json_Rasp = {};
             json_Rasp["key"] = user_key;
             json_Rasp["box"] = user_box;
+            json_Rasp["command"] = command;
             
          // csrf와 meta 태그, 아래의 token 값에 대해 공부 필요
     		$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
