@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Login</title>
+	<title>Sign Up</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -56,7 +56,7 @@
 				<form class="login100-form validate-form p-b-33 p-t-5" th:action="@{/createProcessing}" method='POST'>
 					
 					<div class="wrap-input100 validate-input">
-						<input class="input100" type="text" name="userId" placeholder="User ID" required="required" />
+						<input id="userId" class="input100" type="text" name="userId" placeholder="User ID" required="required" style="text-transform: lowercase;" />
 						<span class="focus-input100" data-placeholder="&#xe822;"></span>
 					</div>
 
@@ -76,7 +76,7 @@
 					</div>
 					
 					<!-- 강의를 간결하게 끝내기 위함.. 원래는 가입실패 여부를 자세히 표시해야한다 -->
-					<div th:if="${param.error}">
+					<div th:if="${param.idexsited}" style="color:red; margin:10px 35px;">
 						계정이 중복됩니다.
 					</div>
 					
@@ -86,7 +86,7 @@
 							Login
 						</button>
 						 -->
-						<input class="login100-form-btn" type="submit" value="Sign Up" />
+						<button class="login100-form-btn" type="submit" value="Sign Up">SIGN UP</button>
 					</div>
 
 				</form>
@@ -97,7 +97,21 @@
 
 	<div id="dropDownSelect1"></div>
 	
+	<script type="text/javascript">
+	$(document).ready(function() {
+	    $("#userId").bind("keyup", function() {
+	    $( this ).val($( this ).val().toLowerCase());
 
+	    }); 
+
+	});
+	$("#userId").keyup(function(event){
+		if (!(event.keyCode >=37 && event.keyCode<=40)) {
+		var inputVal = $(this).val();
+		$(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+		}
+		});
+	</script>
 
 </body>
 </html>

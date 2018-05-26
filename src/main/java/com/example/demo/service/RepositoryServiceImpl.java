@@ -34,7 +34,10 @@ public class RepositoryServiceImpl {
 	RoleRepository roleRepository;
 	
 	@Transactional
-	public void create(AppUser appUser, String password) {
+	public String create(AppUser appUser, String password) {
+		
+		if(userRepository.findOneById(appUser.getUserId()) != null)
+			return "IdExsited"; 
 		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		LocalDate localDate = LocalDate.now();
@@ -58,7 +61,8 @@ public class RepositoryServiceImpl {
 		// DB에 저장
 		userRepository.save(appUser);
 		roleRepository.save(userRole);
-
+		
+		return "Success";
 	}
 	
 }

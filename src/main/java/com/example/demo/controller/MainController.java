@@ -128,10 +128,11 @@ public class MainController {
 	public String createProcessing(AppUser appUser, @RequestParam("password") String password) {
 		
 		// 계정 생성 (구체적인 구현은 RepositoryServiceImpl 부분 참고
-		repositoryService.create(appUser, password);
-		
+		if(repositoryService.create(appUser, password) == "IdExsited") //id 중복
+			return "redirect:/create?idexsited";
 		// Redirect:/login로 입력하면 안된다. 꼭 redirect:/login 으로 써야한다.
-		return "redirect:/login"; //회원가입 성공 시 login 페이지로 넘어간다.
+		else
+			return "redirect:/login"; //회원가입 성공 시 login 페이지로 넘어간다.
 	}
 	
 	@RequestMapping(value="/ajax")
