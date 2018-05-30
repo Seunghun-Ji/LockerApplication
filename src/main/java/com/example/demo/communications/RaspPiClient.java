@@ -34,7 +34,7 @@ public class RaspPiClient {
 		BufferedReader br = null;
 
 		try {
-			socket = new Socket("172.20.14.124", 7777);
+			socket = new Socket("172.25.235.123", 7777);
 			os = socket.getOutputStream();
 			osw = new OutputStreamWriter(os);
 			bw = new BufferedWriter(osw); // 서버로 전송을 위한 OutputStream
@@ -55,7 +55,7 @@ public class RaspPiClient {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = "failure";
+			result = "통신에 문제가 있습니다. 잠시 후에 다시 시도해주세요";
 			
 		} finally {
 			try {

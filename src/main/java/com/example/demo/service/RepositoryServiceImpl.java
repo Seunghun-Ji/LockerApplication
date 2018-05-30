@@ -15,7 +15,7 @@ import com.example.demo.entity.UserRole;
 
 /**
 *
-* [설명] 	사용자 등록을 위한 서비스.
+* [설명] 	database에 사용자 회원 정보를 등록하기위한 서비스.
 * 		비밀번호는 db에 저장 시 암호화하여 저장한다.
 *
 * @file : RepositoryServiceImpl.java

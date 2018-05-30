@@ -19,6 +19,8 @@ import lombok.ToString;
 /**
 *
 * [설명] Ajax transmission Controller setting
+* 		json data를 @RequestBody에 해당하는 객체로 받게 해주는 역할은 
+* 		pom.xml의 jackson-mapper-asl이 자동으로 해주기 때문에 가능한 부분이다.
 *
 * @file : AjaxController.java
 * @package : com.example.demo.controller
@@ -32,8 +34,9 @@ public class AjaxController {
 	//CORS(Cross-origin resource sharing)을 통해 다른 도메인의 서버 url 호출 시 나타나는 보안문제를 해결 할 수 있다.
 	@CrossOrigin("*")
 	@RequestMapping(value="/object", method = RequestMethod.POST)
-	public @ResponseBody Map<Integer, Object> sendOb(@RequestBody DoorRequest params, Principal principal) {
+	public @ResponseBody Map<String, Object> sendOb(@RequestBody DoorRequest params, Principal principal) {
 		
+		// Map<Integer, Object>
 		// @RequestBody로 받은 데이터 확인 -> json 데이터로 받은 값을 객체에 자동으로 넣어서 사용한다.
 		System.out.println(params.toString()); 
 		
@@ -41,11 +44,13 @@ public class AjaxController {
 		RaspPiClient cm = new RaspPiClient();
 		String sendData = params.getKey() + "," + params.getBox() + "," + principal.getName() + "," + params.getCommand();
 		
-		cm.clientRun(sendData);
+		String result = cm.clientRun(sendData);
 		
 		// ajax에게 돌려줄 데이터 (key, value) 생성
-		HashMap<Integer, Object> map = new HashMap<Integer, Object>();
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		
+		map.put("answer", result);
+		/*
 		// 임의의 데이터 생성 후 map에 등록
 		for(int i=0; i < 10; i++) {
 		
@@ -57,12 +62,14 @@ public class AjaxController {
 			
 			map.put(i, data);
 		}
+		*/
 		// jackson 라이브러리를 통해 Map 자료형을 자동으로 json으로 변환해서 ajax에게 돌려준다.
 		return map;
 	}
 	
 }
 
+// 클라이언트로부터 rasp 통신 때 받는 json data를 객체로 받기 위한 클래스
 @Getter @Setter @ToString
 class DoorRequest {
 	private String key;

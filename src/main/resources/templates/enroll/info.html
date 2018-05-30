@@ -1,103 +1,597 @@
 <!DOCTYPE html>
-<html >
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Site made with Mobirise Website Builder v4.7.2, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v4.7.2, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="main/assets/images/1-127x128.png" type="image/x-icon">
-  <meta name="description" content="">
-  <title>Bear Door</title>
-  <link rel="stylesheet" href="enroll/assets/web/assets/mobirise-icons/mobirise-icons.css">
-  <link rel="stylesheet" href="enroll/assets/tether/tether.min.css">
-  <link rel="stylesheet" href="enroll/assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="enroll/assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="enroll/assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="enroll/assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="enroll/assets/theme/css/style.css">
-  <link rel="stylesheet" href="enroll/assets/mobirise/css/mbr-additional.css" type="text/css">
-  
-  
-  
+<!-- Site made with Mobirise Website Builder v4.7.2, https://mobirise.com -->
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Mobirise v4.7.2, mobirise.com">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, minimum-scale=1">
+<link rel="shortcut icon" href="main/assets/images/1-127x128.png"
+	type="image/x-icon">
+<meta name="description" content="">
+<title>Bear Door</title>
+<link rel="stylesheet" href="main/assets/et-line-font-plugin/style.css">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic&subset=latin">
+<link rel="stylesheet" href="main/assets/tether/tether.min.css">
+<link rel="stylesheet" href="main/assets/soundcloud-plugin/style.css">
+<link rel="stylesheet"
+	href="main/assets/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="main/assets/dropdown/css/style.css">
+<link rel="stylesheet" href="main/assets/animate.css/animate.min.css">
+<link rel="stylesheet" href="main/assets/theme/css/style.css">
+<link rel="stylesheet" href="main/assets/mobirise-gallery/style.css">
+<link rel="stylesheet"
+	href="main/assets/mobirise/css/mbr-additional.css" type="text/css">
+
+<!-- user setting -->
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script th:inline="javascript">
+    	var user_name;
+        var url_host = "http://172.31.37.72:5000/";
+        var ccId;
+        var counterList;
+        var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		/* 
+		function callOtherDoamin(url) 
+		{
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', url, true);
+				xhr.onreadystatechange = function() {
+					if(xhr.readyState === 4 && xhr.status === 200){
+				        document.querySelector('#time').innerHTML = xhr.responseText;
+				}
+		}
+		 */
+        //로그인
+        function login()
+        {
+            url = url_host + "registrar";
+            user_name = "test_user0"
+            var password = "MS9qrN8hFjlE";
+            var JSONdata = {
+                "enrollId": user_name,
+                "enrollSecret":password
+            };
+            executeJsonRpc(url, JSONdata,
+            function success(data){
+                //로그인 성공
+                console.log("Login Success!!");
+            },
+            function error(data)
+            {
+                //로그인 실패
+                console.log("login error");
+            }
+            );
+        }
+        //배포
+        function deploy()
+        {
+            url = url_host + "chaincode";
+            var JSONdata = createJSONdataForCounterApp("deploy", "init", [], 1);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                //배포 성공
+              	
+                ccId = data.result.message;
+                console.log("Deploy Success!!");
+                alert("접속 승인 완료!");
+                refresh();
+            },
+            function error(data)
+            {
+                // 배포 에러
+                console.log("접속 승인 실패! 잠시 후에 다시 시도해주세요!") 
+                console.log(data);
+            }
+            );
+        }
+        //갱신
+        function refresh(function1, targetIndex, command)
+        {
+        	if(targetIndex)
+        		console.log("selected number: ", targetIndex + 1);
+            if (counterList != null)
+            {
+                var table = document.getElementById('list');
+                for (var i = counterList.length; i>0; i--)
+                {
+                    table.deleteRow(i);
+                }
+            }
+            // 카운터 정보 모두 취득
+            getCounters(function1, targetIndex, command);
+        }
+        
+        // 사용자 등록
+        function Register()
+        {
+            url = url_host + "chaincode";
+            var targetIndex;
+            var counterList = document.getElementsByName("counter");
+            for(i=0; i< counterList.length;i++)
+            {
+                if (counterList[i].checked)
+                {
+                    //대상 카운터 정보 취득
+                    targetIndex = counterList[i].value;
+                }
+            }
+            // 대상자 카운트
+            var JSONdata = createJSONdataForCounterApp("invoke", "Register", [targetIndex, /*[[${userId}]]*/], 3);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                if(data=="error")
+                	console.log("error")
+                else if (!data)
+                	console.log("Register Success!!");
+                console.log("register: ", data);
+                refresh(rasp, Number(targetIndex), 3);
+                
+            },
+            function error(data)
+            {
+                console.log("Register error!!");
+                console.log(data);
+            }
+            );
+        }
+        
+        // 사용자 등록 해제
+        function Unregister()
+        {
+            url = url_host + "chaincode";
+            var targetIndex;
+            var counterList = document.getElementsByName("counter");
+            for(i=0; i< counterList.length;i++)
+            {
+                if (counterList[i].checked)
+                {
+                    //대상 카운터 정보 취득
+                    targetIndex = counterList[i].value;
+                }
+            }
+            // 대상자 카운트
+            var JSONdata = createJSONdataForCounterApp("invoke", "UnRegister", [targetIndex, /*[[${userId}]]*/], 3);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
+                console.log("Unregister Success!!");
+                console.log(data);
+                refresh(rasp, Number(targetIndex), 4);
+               
+            },
+            function error(data)
+            {
+                console.log("Unregister error!!");
+                console.log(data);
+            }
+            );
+        }
+        
+        // 잠금 해제
+        function Unlock()
+        {
+            url = url_host + "chaincode";
+            var targetIndex;
+            var counterList = document.getElementsByName("counter");
+            for(i=0; i< counterList.length;i++)
+            {
+                if (counterList[i].checked)
+                {
+                    //대상 카운터 정보 취득
+                    targetIndex = counterList[i].value;
+                }
+            }
+            // 대상자 카운트
+            var JSONdata = createJSONdataForCounterApp("invoke", "Unlock", [targetIndex, /*[[${userId}]]*/], 7);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
+                console.log("Unlock Success!!");
+                refresh(rasp, Number(targetIndex), 1);
+            },
+            function error(data)
+            {
+                console.log("Unlock error!!");
+                console.log(data);
+            }
+            );
+        }
+        
+        // 잠금
+        function Lock()
+        {
+            url = url_host + "chaincode";
+            var targetIndex;
+            var counterList = document.getElementsByName("counter");
+            for(i=0; i< counterList.length;i++)
+            {
+                if (counterList[i].checked)
+                {
+                    //대상 카운터 정보 취득
+                    targetIndex = counterList[i].value;
+                }
+            }
+            // 대상자 카운트
+            var JSONdata = createJSONdataForCounterApp("invoke", "Lock", [targetIndex, /*[[${userId}]]*/], 9);
+            executeJsonRpc(url, JSONdata,
+            function success(data)
+            {
+                if(data=="error")
+                console.log("error")
+                else if (!data)
+                console.log("Lock Success!!");
+                refresh(rasp, Number(targetIndex), 2);
+            },
+            function error(data)
+            {
+                console.log("Lock error!!");
+                console.log(data);
+            }
+            );
+        }
+        
+        //카운터 취득
+        function getCounters(function1, targetIndex, command)
+        {
+        	var perfomance = 0;
+            url = url_host + "chaincode";
+            var JSONdata = createJSONdataForCounterApp("query", "refresh", [], 5);
+            executeJsonRpc(url, JSONdata,
+                function success(data)
+                {
+	                console.log(data);
+	                counterList = JSON.parse(data.result.message);
+	                console.log("counterList", counterList);
+	                var table = document.getElementById('list');
+	                for(var i =0; i<counterList.length; i++)
+	                {
+	                    //카운터 정보 취득
+	                    var counter = counterList[i];
+	                    console.log("["+i+"]", counter);
+	                    //### HTML 편집 table 행 추가, 편집 시작###
+	                    var row = table.insertRow();
+	                    var td = row.insertCell(0);
+	                    var radioButton1 = document.createElement('input');
+	                    radioButton1.type = 'radio';
+	                    radioButton1.name = 'counter';
+	                    radioButton1.value = i;
+	                    td.appendChild(radioButton1);
+	                    td = row.insertCell(1);
+	                    td.innerHTML = counter.id;
+	                    td = row.insertCell(2);
+	                    td.innerHTML = counter.lock;
+	                    //###HTML 편집 table 행 추가, 편집 끝###
+	                    
+	                    // block chian db에 등록된 사용자 정보 확인
+	                    if( counter.no == (targetIndex + 1) ) // 조건문에 && counter.id == /*[[${userId}]]*/ 옵션까지 주면 클라이언트 상에서 잘못된 요청을 대부분 막을 수 있다.
+	                    {
+	                    	var key = counter.key;
+	                    	var no = counter.no;
+	                    	
+	                    	if(typeof function1 === "function")
+	                        	function1(key, no, command);
+	                    }
+	                }
+	             	// 위 조건문에 && counter.id == /*[[${userId}]]*/ 옵션을 줄 경우 command 4 는 절대 실행되지 않으므로 추가로 설정
+	                /* 
+	                if(command == 4)
+	                {
+	                	if(typeof function1 === "function")
+	                		{
+	                			var no = (targetIndex + 1);
+	                			function1("", no, command);
+	                		}
+	                }
+	                 */
+	            },
+	            function error(data)
+	            {
+	                console.log("refresh error");
+	            }
+	            
+            );
+
+            
+        }
+        //JSON 메세지 생성
+        function createJSONdataForCounterApp(method, functionName, args, id)
+        {
+            var JSONdata = {
+                jsonrpc: "2.0",
+                method: method,
+                params: {
+                    type: 1,
+                    ctorMsg: {
+                        function: functionName,
+                        args: args
+                    },
+                    secureContext: user_name,
+                },
+                id: id
+            };
+            
+            // console.log(args);
+            
+            //체인 코드 ID 설정
+            if (functionName == "init")
+            {
+                JSONdata.params["chaincodeID"] = 
+                {
+                    path : "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_counter"
+                };
+            } 
+            else 
+            {
+                JSONdata.params["chaincodeID"] = 
+                {
+                    name: ccId
+                };
+            }
+            return JSONdata;
+        }
+        //JSON-RPC 실행
+        function executeJsonRpc(url_exec, JSONdata, success, error)
+        {
+        	var returnValue = 1;
+            $.ajax({
+            	// headers: {  'Access-Control-Allow-Headers': 'http://172.31.37.31:5000/chaincode' },
+                type : 'post',
+                url: url_exec,
+                data : JSON.stringify(JSONdata),
+                contentType: 'application/JSON;',
+                dataType: 'JSON',
+                scriptCharset: 'utf-8',
+                success: function(data)
+                {
+                    success(data);
+                    console.log(data);
+                },
+                error: function(data)
+                {
+                    error(data);
+                }
+            });
+            
+        }
+        
+        function rasp(user_key, user_box, command) {
+        	
+        	console.log("rasp start!", user_key, " ", user_box, " ", command);
+        	
+        	var json_Rasp = {};
+            json_Rasp["key"] = user_key;
+            json_Rasp["box"] = user_box;
+            json_Rasp["command"] = command;
+            
+         // csrf와 meta 태그, 아래의 token 값에 대해 공부 필요
+    		$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            
+            // Rasp에 데이터 전송을 위해 서버에게 통신 요청
+            $.ajax( {
+				type: "POST",
+	            contentType: "application/json",
+	            url: "object",
+	            data: JSON.stringify(json_Rasp),
+	            dataType: 'json',
+	            // cache: false,
+	            // timeout: 600000,
+	            success: function (data) {
+	 				console.log("success: ", data);
+	 				alert(data.answer);
+	 			},
+	            error: function (e) {
+	            	
+	                var json = "<h4>Ajax Response Error</h4><pre>"
+	                    + e.responseText + "</pre>";
+	 
+	                console.log("ERROR : ", e);
+	                console.log("json: ", json);
+	            }
+			});
+        }
+   </script>
 </head>
 <body>
-  <section class="menu cid-qS6uqdmVfl" once="menu" id="menu1-13">
+	<section id="menu-0" data-rv-view="0">
 
-    
+		<nav
+			class="navbar navbar-dropdown transparent navbar-fixed-top bg-color">
+			<div class="container">
 
-    <nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </button>
-        <div class="menu-logo">
-            <div class="navbar-brand">
-                <span class="navbar-logo">
-                    <a href="/info">
-                         <img src="main/assets/images/1-127x128.png" alt="Mobirise" style="height: 3.8rem;">
-                    </a>
-                </span>
-                <span class="navbar-caption-wrap">
-                    <a class="navbar-caption text-white display-4" href="/info">
-                        Bear Door
-                    </a>
-                </span>
-            </div>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true"><li class="nav-item">
-                    <a class="nav-link link text-white display-4" href="/info">
-                        <span class="mbri-home mbr-iconfont mbr-iconfont-btn"></span>
-                        Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link link text-white display-4" href="/aboutUs">
-                        <span class="mbri-search mbr-iconfont mbr-iconfont-btn"></span>
-                        About Us
-                    </a>
-                </li></ul>
-            <div class="navbar-buttons mbr-section-btn"><a class="btn btn-sm btn-primary display-4" href="logout"><span class="mbri-logout mbr-iconfont mbr-iconfont-btn"></span>logout</a></div>
-        </div>
-    </nav>
-</section>
+				<div class="mbr-table">
+					<div class="mbr-table-cell">
 
-<section class="engine"><a href="https://mobirise.me/f">simple site maker</a></section><section class="header1 cid-qS6yyvBYsf mbr-fullscreen mbr-parallax-background" id="header1-1d">
+						<div class="navbar-brand">
+							<a href="/" class="navbar-logo"><img
+								src="main/assets/images/1-127x128.png" alt="Bear Door"></a> <a
+								class="navbar-caption" href="/">Bear Door</a>
+						</div>
 
-    
+					</div>
+					<div class="mbr-table-cell">
 
-    
+						<button class="navbar-toggler pull-xs-right hidden-md-up"
+							type="button" data-toggle="collapse"
+							data-target="#exCollapsingNavbar">
+							<div class="hamburger-icon"></div>
+						</button>
 
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="mbr-white col-md-10">
-                <h1 class="mbr-section-title align-center mbr-bold pb-3 mbr-fonts-style display-1">곰문 사물함에 오신것을<br>환영합니다!</h1>
-                
-                
-                <div class="mbr-section-btn align-center"><a class="btn btn-md btn-primary display-4" href="enroll"><span class="mbri-touch mbr-iconfont mbr-iconfont-btn"></span>Register</a>
-                    <a class="btn btn-md btn-white-outline display-4" href="userInfo"><span class="mbri-smile-face mbr-iconfont mbr-iconfont-btn"></span>My Info</a></div>
-            </div>
-        </div>
-    </div>
+						<ul
+							class="nav-dropdown collapse pull-xs-right nav navbar-nav navbar-toggleable-sm"
+							id="exCollapsingNavbar">
+							<li class="nav-item"><a class="nav-link link" href="aboutUs">ABOUT
+									US</a></li>
+							<li class="nav-item dropdown"><a class="nav-link link"
+								href="features" aria-expanded="false">FEATURES</a></li>
+							<li class="nav-item nav-btn"><a
+								class="nav-link btn btn-white btn-white-outline" href="logout">LOGOUT</a></li>
+						</ul>
+						<button hidden="" class="navbar-toggler navbar-close"
+							type="button" data-toggle="collapse"
+							data-target="#exCollapsingNavbar">
+							<div class="close-icon"></div>
+						</button>
 
-</section>
+					</div>
+				</div>
+
+			</div>
+		</nav>
+
+	</section>
+
+	<section class="engine">
+		<a href="https://mobirise.me/j">website templates</a>
+	</section>
+	<section
+		class="mbr-section mbr-section-hero mbr-section-full header2 mbr-parallax-background mbr-after-navbar"
+		id="header2-1" data-rv-view="2"
+		style="background-image: url(main/assets/images/mbr-1559x1080.jpg);">
+
+		<div class="mbr-overlay"
+			style="opacity: 0.5; background-color: rgb(0, 0, 0);"></div>
+
+		<div class="mbr-table-cell">
+
+			<div class="container">
+				<div class="row">
+					<div class="mbr-section col-md-10 col-md-offset-2 text-xs-right">
+
+						<h1 class="mbr-section-title display-1">Locker Registration</h1>
+						<p class="mbr-section-lead lead"
+							style="font-family: 'Yanone Kaffeesatz', sans-serif">
+							<br>서버로부터 접근 승인이 확인되면 아래로 스크롤하여 <br>서비스를 사용하세요 !
+						</p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mbr-arrow mbr-arrow-floating" aria-hidden="true">
+			<a href="#gallery3-1u"><i class="mbr-arrow-icon"></i></a>
+		</div>
+
+	</section>
+
+	<section
+		class="mbr-gallery mbr-section mbr-section-nopadding mbr-slider-carousel"
+		data-filter="true" id="gallery3-1u" data-rv-view="12"
+		style="background-color: rgb(255, 255, 255); padding-top: 6rem; padding-bottom: 3rem; height: 800px;">
 
 
-  <script src="enroll/assets/web/assets/jquery/jquery.min.js"></script>
-  <script src="enroll/assets/popper/popper.min.js"></script>
-  <script src="enroll/assets/tether/tether.min.js"></script>
-  <script src="enroll/assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="enroll/assets/smoothscroll/smooth-scroll.js"></script>
-  <script src="enroll/assets/dropdown/js/script.min.js"></script>
-  <script src="enroll/assets/touchswipe/jquery.touch-swipe.min.js"></script>
-  <script src="enroll/assets/parallax/jarallax.min.js"></script>
-  <script src="enroll/assets/theme/js/script.js"></script>
-  
-  
+		<!-- DoorLock info -->
+		<div class="mbr-gallery-row container">
+			<div class=" mbr-gallery-layout-default">
+				<h2>
+					어서오세요 <span id="userId" th:text="${userId}">${userId}</span> 님!
+				</h2>
+				<br />
+				<table id="list" class="table table-bordered table-hover">
+					<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">name</th>
+						<th scope="col">Lock</th>
+					</tr>
+					</thead>
+				</table>
+				<br /> <input type="button" class="btn btn-info" value="새로고침" onclick="refresh();" />
+				&nbsp; <input type="button" class="btn btn-success" value="사물함 open" onclick="Unlock();" />
+				&nbsp; <input type="button" class="btn btn-warning" value="사물함 close" onclick="Lock();" />
+				&nbsp; <input type="button" class="btn btn-primary" value="사물함 등록" onclick="Register();" />
+				&nbsp; <input type="button" class="btn btn-danger" value="사물함 해제" 	onclick="Unregister();" />
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		
+	</section>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			login();
+			deploy();
+			alert("접속 승인중입니다. 잠시만 기다려주세요!");
+			//console.log(/*[[${userId}]]*/);
+		});
+	</script>
+
+	<section class="mbr-section mbr-section-md-padding mbr-footer footer1"
+		id="contacts1-1n" data-rv-view="47"
+		style="background-color: rgb(46, 46, 46); padding-top: 90px; padding-bottom: 90px;">
+
+		<div class="container">
+			<div class="row">
+				<div class="mbr-footer-content col-xs-12 col-md-3">
+					<div>
+						<a href="index.html"><img
+							src="main/assets/images/1-128x129.png"></a>
+					</div>
+				</div>
+				<div class="mbr-footer-content col-xs-12 col-md-3">
+					<p>
+						<strong>Address</strong><br>경기 용인시 수지구 죽전로 152<br>단국대학교
+						<br>
+					</p>
+				</div>
+				<div class="mbr-footer-content col-xs-12 col-md-3">
+					<p>
+						<strong>Contacts</strong><br> Email: seunghnuji94@gmail.com<br>
+						Phone: 010-6550-5236
+					</p>
+				</div>
+				<div class="mbr-footer-content col-xs-12 col-md-3">
+					<p>
+						<strong>Links</strong><br> <a class="text-primary"
+							href="https://mobirise.com/">Mobirise</a><br> <a
+							class="text-primary"
+							href="https://mobirise.com/mobirise-free-win.zip">Download
+							for Andorid</a><br>
+					</p>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+
+	<script src="main/assets/web/assets/jquery/jquery.min.js"></script>
+	<script src="main/assets/tether/tether.min.js"></script>
+	<script src="main/assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="main/assets/dropdown/js/script.min.js"></script>
+	<script src="main/assets/smooth-scroll/smooth-scroll.js"></script>
+	<script src="main/assets/touch-swipe/jquery.touch-swipe.min.js"></script>
+	<script
+		src="main/assets/bootstrap-carousel-swipe/bootstrap-carousel-swipe.js"></script>
+	<script src="main/assets/viewport-checker/jquery.viewportchecker.js"></script>
+	<script src="main/assets/jquery-mb-ytplayer/jquery.mb.ytplayer.min.js"></script>
+	<script src="main/assets/masonry/masonry.pkgd.min.js"></script>
+	<script src="main/assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
+	<script src="main/assets/theme/js/script.js"></script>
+	<script src="main/assets/mobirise-gallery/player.min.js"></script>
+	<script src="main/assets/mobirise-gallery/script.js"></script>
+
+
+	<input name="animation" type="hidden">
 </body>
 </html>

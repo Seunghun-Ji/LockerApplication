@@ -45,35 +45,16 @@ public class MainController {
 	public String featuresPage() {
 		return "main/features";
 	}
-	
-	@RequestMapping(value="/portal")
-	public String portalPage() {
-		return "portal/index";
+
+	@RequestMapping("/signUp")
+	public String create() {
+		return "portal/create";
 	}
-	
-	@RequestMapping(value="/signUp")
-	public String signUpPage() {
-		return "portal/signUp";
-	}
-	
+
 	@RequestMapping(value="/info")
-	public String infoPage() {
+	public String infoPage(Principal principal, Model model) {
+		model.addAttribute("userId", principal.getName());
 		return "enroll/info";
-	}
-	
-	@RequestMapping(value="enroll")
-	public String enrollPage() {
-		return "enroll/enroll";
-	}
-	
-	@RequestMapping(value="userInfo")
-	public String userInfoPage() {
-		return "userInfo/userInfo";
-	}
-	
-	@RequestMapping(value="/monitor")
-	public String testMonitorPage() {
-		return "monitor";
 	}
 	
 	// Thymeleaf로 정보를 넘기는 방법
@@ -94,16 +75,6 @@ public class MainController {
 	@RequestMapping(value="/login")
 	public String loginPage() {
 		return "login";
-	}
-	
-	@RequestMapping(value="/signUp2")
-	public String signUp2Page() {
-		return "signUp2";
-	}
-
-	@RequestMapping("/create")
-	public String create() {
-		return "create";
 	}
 	
 	@RequestMapping("/test")
@@ -129,15 +100,10 @@ public class MainController {
 		
 		// 계정 생성 (구체적인 구현은 RepositoryServiceImpl 부분 참고
 		if(repositoryService.create(appUser, password) == "IdExsited") //id 중복
-			return "redirect:/create?idexsited";
+			return "redirect:/signUp?idexsited";
 		// Redirect:/login로 입력하면 안된다. 꼭 redirect:/login 으로 써야한다.
 		else
 			return "redirect:/login"; //회원가입 성공 시 login 페이지로 넘어간다.
 	}
-	
-	@RequestMapping(value="/ajax")
-	public String ajaxPage() {
-		return "ajaxtest";
-	}
-	
+
 }
